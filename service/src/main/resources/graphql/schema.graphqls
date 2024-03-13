@@ -9,7 +9,6 @@ type Customer {
 type Order {
     id: ID!
     orderedOn: String!
-    customer: Customer!
     products: [Product!]!
     shippingAddress: String!
     status: OrderStatus!
