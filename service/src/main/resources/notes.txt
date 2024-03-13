@@ -1,0 +1,14 @@
+What queries I want to implement:
+
+We dont have batching.
+
+Multiple queries from a data backend might be needed.
+https://graphql.org/learn/best-practices/#server-side-batching-caching
+Therefore testing a query that requires to fetch multiple granular dates.
+
+
+Queries
+
+Requesting all products of
+
+Mutations

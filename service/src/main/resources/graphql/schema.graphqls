@@ -1,0 +1,41 @@
+type Customer {
+    id: ID!
+    name: String!
+    email: String!
+    address: String!
+    orders: [Order!]
+}
+
+type Order {
+    id: ID!
+    orderedOn: String!
+    customer: Customer!
+    products: [Product!]!
+    shippingAddress: String!
+    status: OrderStatus!
+}
+
+enum OrderStatus {
+    PENDING,
+    PROCESSING,
+    COMPLETED,
+    CANCELLED
+}
+
+type Product {
+    id: ID!
+    name: String!
+    price: Float!
+    description: String
+}
+
+type Query {
+    """
+    Queries a customer by its id.
+    """
+    customer(id: ID): Customer
+    """
+    Queries all customers.
+    """
+    customers: [Customer]
+}
