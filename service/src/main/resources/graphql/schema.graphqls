@@ -6,11 +6,17 @@ type Customer {
     orders: [Order!]
 }
 
+type Product {
+    id: ID!
+    name: String!
+    price: Float!
+    description: String
+}
+
 type Order {
     id: ID!
     orderedOn: String!
     products: [Product!]!
-    shippingAddress: String!
     status: OrderStatus!
 }
 
@@ -21,12 +27,11 @@ enum OrderStatus {
     CANCELLED
 }
 
-type Product {
-    id: ID!
-    name: String!
-    price: Float!
-    description: String
+input PriceFilter {
+    max: Float
+    min: Float
 }
+
 
 type Query {
     """
@@ -37,4 +42,21 @@ type Query {
     Queries all customers.
     """
     customers: [Customer]
+    """
+    Queries all products.
+    """
+    products(priceFilter: PriceFilter): [Product]
+
+    """
+    Queries a product by its id.
+    """
+    product(id: ID): Product
+    """
+    Queries all products.
+    """
+    orders: [Order]
+    """
+    Queries an order by its id.
+    """
+    order(id: ID): Order
 }

@@ -2,11 +2,9 @@ package de.provadis.brunne.wab1.service;
 
 import de.provadis.brunne.wab1.service.datamodel.Customer;
 import de.provadis.brunne.wab1.service.datamodel.Order;
-import de.provadis.brunne.wab1.service.datamodel.OrderStatus;
 import de.provadis.brunne.wab1.service.datamodel.Product;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +68,7 @@ public class DataSource {
                 ));
         addOrder(customers.get("customer-6"),
                 new Order("order-2", List.of(
-                        products.get("product-5"),
+                        products.get("product-3"),
                         products.get("product-4")
                 )));
     }
@@ -79,20 +77,29 @@ public class DataSource {
         return orders.values().stream().toList();
     }
 
+    public List<Customer> getCustomers() {
+        return customers.values().stream().toList();
+    }
+
+    public List<Product> getProducts() {
+        return products.values().stream().toList();
+    }
+
     public void addOrder(Customer customer, Order order) {
         customer.orders().add(order);
         orders.put(order.id(), order);
     }
 
-    public Order findOrderById(String id) {
+    public Order getOrderById(String id) {
         return orders.get(id);
     }
 
-    public Customer findCustomerById(String id) {
+    public Customer getCustomerById(String id) {
         return customers.get(id);
     }
 
-    public List<Customer> getAllCustomers() {
-        return customers.values().stream().toList();
+    public Product getProductById(String id) {
+        return products.get(id);
     }
+
 }

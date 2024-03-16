@@ -12,14 +12,13 @@ Query
 
 - Read/Retrieve
 
-requesting all products
-requesting all customers
-requesting all orders
-G requesting customer by id
-requesting product by id
-requesting order by id
+G R requesting all products
+G R requesting all customers
+G R requesting all orders
+G R requesting customer by id
+G R requesting product by id
+G R requesting order by id
 requesting products below/above a specific price
-requesting all products of a specific order.
 requesting all products of all orders of a specific customer.
 
 Mutation
