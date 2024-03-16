@@ -6,9 +6,33 @@ Multiple queries from a data backend might be needed.
 https://graphql.org/learn/best-practices/#server-side-batching-caching
 Therefore testing a query that requires to fetch multiple granular dates.
 
+Ideas for query endpoints
 
-Queries
+Query
 
-Requesting all products of
+- Read/Retrieve
 
-Mutations
+requesting all products
+requesting all customers
+requesting all orders
+G requesting customer by id
+requesting product by id
+requesting order by id
+requesting products below/above a specific price
+requesting all products of a specific order.
+requesting all products of all orders of a specific customer.
+
+Mutation
+
+- Create
+Creating a new Customer
+Creating a new Product
+Creating a new Order for a given customer with the given products
+
+- Delete
+Deleting a customer/product/order
+Removing a product from an order
+
+- Update
+Update a customer's email
+Update a product's price
