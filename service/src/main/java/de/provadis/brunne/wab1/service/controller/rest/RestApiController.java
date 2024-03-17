@@ -3,8 +3,10 @@ package de.provadis.brunne.wab1.service.controller.rest;
 import de.provadis.brunne.wab1.service.DataSource;
 import de.provadis.brunne.wab1.service.datamodel.Customer;
 import de.provadis.brunne.wab1.service.datamodel.Order;
+import de.provadis.brunne.wab1.service.datamodel.PriceFilter;
 import de.provadis.brunne.wab1.service.datamodel.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +35,12 @@ public class RestApiController {
         return dataSource.getProductById(id);
     }
     @GetMapping("/products")
-    public List<Product> getProducts() {
-        return dataSource.getProducts();
+    public List<Product> getProducts(@RequestParam(required = false) Float min,
+                                     @RequestParam(required = false) Float max) {
+        if (min == null && max == null) {
+            return dataSource.getProducts();
+        }
+        return dataSource.getProducts(new PriceFilter(min, max));
     }
 
     // ORDERS

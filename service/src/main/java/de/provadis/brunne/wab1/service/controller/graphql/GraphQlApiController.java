@@ -3,6 +3,7 @@ package de.provadis.brunne.wab1.service.controller.graphql;
 import de.provadis.brunne.wab1.service.DataSource;
 import de.provadis.brunne.wab1.service.datamodel.Customer;
 import de.provadis.brunne.wab1.service.datamodel.Order;
+import de.provadis.brunne.wab1.service.datamodel.PriceFilter;
 import de.provadis.brunne.wab1.service.datamodel.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -29,15 +30,17 @@ public class GraphQlApiController {
     }
 
     @QueryMapping
-    public List<Product> products() {
-        return dataSource.getProducts();
-    }
-
-    @QueryMapping
     public Product product(@Argument String id) {
         return dataSource.getProductById(id);
     }
 
+    @QueryMapping
+    public List<Product> products(@Argument PriceFilter priceFilter) {
+        if (priceFilter != null) {
+            return dataSource.getProducts(priceFilter);
+        }
+        return dataSource.getProducts();
+    }
 
     @QueryMapping
     public List<Order> orders() {

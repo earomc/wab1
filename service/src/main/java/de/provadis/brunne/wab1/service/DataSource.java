@@ -2,6 +2,7 @@ package de.provadis.brunne.wab1.service;
 
 import de.provadis.brunne.wab1.service.datamodel.Customer;
 import de.provadis.brunne.wab1.service.datamodel.Order;
+import de.provadis.brunne.wab1.service.datamodel.PriceFilter;
 import de.provadis.brunne.wab1.service.datamodel.Product;
 import org.springframework.stereotype.Component;
 
@@ -34,7 +35,7 @@ public class DataSource {
                         "Wecker",
                         "weckt",
                         24.99
-                        ),
+                ),
                 new Product("product-4",
                         "Pizzaofen",
                         "backt Pizza",
@@ -83,6 +84,19 @@ public class DataSource {
 
     public List<Product> getProducts() {
         return products.values().stream().toList();
+    }
+
+    public List<Product> getProducts(PriceFilter filter) {
+        return products.values().stream().filter(product -> {
+            if (filter.max() != null && product.price() > filter.max()) {
+                return false;
+            }
+            //noinspection RedundantIfStatement
+            if (filter.min() != null && product.price() < filter.min()) {
+                return false;
+            }
+            return true;
+        }).toList();
     }
 
     public void addOrder(Customer customer, Order order) {
