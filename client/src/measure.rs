@@ -7,27 +7,28 @@ use crate::{num_util::{average, median}, queries::{build_graphql_request, build_
 use core::fmt::Debug;
 
 pub struct MeasureResult {
-    duration: Duration,
-    response: Response,
-    response_string: String,
+    pub duration: Duration,
+    pub response: Response,
+    pub response_string: String,
 }
 
 impl Debug for MeasureResult {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_fmt(format_args!(
             "Duration: {:?}, Response: {:?}, Response as String: {}",
             self.duration, self.response, self.response_string
         ))
     }
 }
 
-pub struct BulkMeasureResult {
-    average_duration: Duration,
-    median_duration: Duration,
-    single_results: Vec<MeasureResult>,
+pub struct BulkMeasureResult<'a> {
+    pub name: &'a str,
+    pub average_duration: Duration,
+    pub median_duration: Duration,
+    pub single_results: Vec<MeasureResult>,
 }
 
-impl Debug for BulkMeasureResult {
+impl<'a> Debug for BulkMeasureResult<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
             "Average duration: {:?}, Median duration: {:?}",
@@ -36,8 +37,8 @@ impl Debug for BulkMeasureResult {
     }
 }
 
-impl BulkMeasureResult {
-    pub fn from_single_results(single_results: Vec<MeasureResult>) -> BulkMeasureResult {
+impl<'a> BulkMeasureResult<'a> {
+    pub fn from_single_results(single_results: Vec<MeasureResult>, name: &'a str) -> BulkMeasureResult {
         let mut durations_as_nanos: Vec<u128> = single_results
             .iter()
             .map(|res| res.duration.as_nanos())
@@ -49,7 +50,7 @@ impl BulkMeasureResult {
         let median_nanos = median(&mut durations_as_nanos);
         let median_duration = Duration::from_nanos(median_nanos as u64);
 
-        Self { single_results, average_duration, median_duration }
+        Self { single_results, average_duration, median_duration, name}
     }
 }
 
@@ -69,24 +70,25 @@ pub fn measure_request(client: &Client, request: Request) -> Result<MeasureResul
     })
 }
 
-pub fn measure_rest_request_bulk(client: &Client, method: &Method, query: &str, iterations: usize) -> Result<BulkMeasureResult, Box<dyn Error>> {
+pub fn measure_rest_request_bulk<'a>(client: &Client, method: &Method, query: &str, iterations: usize, name: &'a str) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
         let result = measure_request(client, build_rest_request(client, method, query))?;
         single_results.push(result);
     }
-    Ok(BulkMeasureResult::from_single_results(single_results))
+    Ok(BulkMeasureResult::from_single_results(single_results, name))
 }
 
-pub fn measure_graphql_request_bulk(
+pub fn measure_graphql_request_bulk<'a>(
     client: &Client,
     query: &str,
     iterations: usize,
-) -> Result<BulkMeasureResult, Box<dyn Error>> {
+    name: &'a str
+) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
         let result = measure_request(client, build_graphql_request(&client, query))?;
         single_results.push(result);
     }
-    Ok(BulkMeasureResult::from_single_results(single_results))
+    Ok(BulkMeasureResult::from_single_results(single_results, name))
 }
