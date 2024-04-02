@@ -44,7 +44,7 @@ public class DataSource {
 
     private void addCustomers(Customer... customers) {
         for (Customer customer : customers) {
-            this.customers.put(customer.id(), customer);
+            this.customers.put(customer.getId(), customer);
         }
     }
 
@@ -100,8 +100,8 @@ public class DataSource {
     }
 
     public void addOrder(Customer customer, Order order) {
-        customer.orders().add(order);
-        orders.put(order.id(), order);
+        customer.getOrders().add(order);
+        orders.put(order.getId(), order);
     }
 
     public Order getOrderById(String id) {

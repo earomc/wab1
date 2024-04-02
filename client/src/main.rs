@@ -10,8 +10,9 @@ use std::{
 
 use num_util::{average, median};
 use queries::*;
-use reqwest::blocking::{Client, Request, Response};
+use reqwest::{blocking::{Client, Request, Response}, Method};
 
+pub const HOST_NAME: &str = "http://localhost:8080";
 pub const GRAPHQL_ENDPOINT: &str = "http://localhost:8080/graphql";
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -20,14 +21,16 @@ fn main() -> Result<(), Box<dyn Error>> {
         .build()?;
 
     let graphql_queries = get_graphql_queries();
+    let rest_queries = get_rest_queries();
 
-    let bulk_result =
-        measure_graphql_request_bulk(&client, graphql_queries.get(0).unwrap(), 10000).unwrap();
+    let bulk_result_gql = measure_graphql_request_bulk(&client, graphql_queries.get(0).unwrap(), 10000)?;
     
-    println!(
-        "Average {:?}, Median: {:?}, ",
-        bulk_result.average_duration, bulk_result.median_duration
-    );
+    let rest_query0 = rest_queries.get(0).unwrap();
+    let bulk_result_rest = measure_rest_request_bulk(&client, &rest_query0.0, &rest_query0.1, 10000)?;
+
+    println!("GraphQL Result {:?}", bulk_result_gql);
+    println!("Rest Result {:?}", bulk_result_rest);
+
     Ok(())
 }
 
@@ -70,8 +73,8 @@ struct BulkMeasureResult {
 impl Debug for BulkMeasureResult {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
-            "Average duration: {:?}, Median duration: {:?}, Individual Results {:?}",
-            self.average_duration, self.median_duration, self.single_results
+            "Average duration: {:?}, Median duration: {:?}",
+            self.average_duration, self.median_duration
         ))
     }
 }
@@ -93,6 +96,15 @@ impl BulkMeasureResult {
     }
 }
 
+fn measure_rest_request_bulk(client: &Client, method: &Method, query: &str, iterations: usize) -> Result<BulkMeasureResult, Box<dyn Error>> {
+    let mut single_results = Vec::new();
+    for _ in 0..iterations {
+        let result = measure_request(client, build_rest_request(client, method, query))?;
+        single_results.push(result);
+    }
+    Ok(BulkMeasureResult::from_single_results(single_results))
+}
+
 fn measure_graphql_request_bulk(
     client: &Client,
     query: &str,
@@ -103,6 +115,5 @@ fn measure_graphql_request_bulk(
         let result = measure_request(client, build_graphql_request(&client, query))?;
         single_results.push(result);
     }
-
     Ok(BulkMeasureResult::from_single_results(single_results))
 }

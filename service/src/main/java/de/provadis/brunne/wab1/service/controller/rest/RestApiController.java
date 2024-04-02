@@ -47,7 +47,7 @@ public class RestApiController {
     @GetMapping("/orders")
     public List<Order> getOrders(@RequestParam(required = false) String customerId) {
         if (customerId != null) {
-            return dataSource.getCustomerById(customerId).orders();
+            return dataSource.getCustomerById(customerId).getOrders();
         } else {
             return dataSource.getOrders();
         }

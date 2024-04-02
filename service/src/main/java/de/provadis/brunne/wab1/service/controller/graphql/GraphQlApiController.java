@@ -29,7 +29,7 @@ public class GraphQlApiController {
         return dataSource.getCustomers();
     }
 
-    @QueryMapping
+    @QueryMapping   
     public Product product(@Argument String id) {
         return dataSource.getProductById(id);
     }

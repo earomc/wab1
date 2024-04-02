@@ -1,19 +1,32 @@
-use reqwest::blocking::{Client, Request};
+use reqwest::{blocking::{Client, Request}, Method};
 use serde_json::json;
 
-use crate::GRAPHQL_ENDPOINT;
-
-pub fn get_rest_requests() {
-    let _queries: &[&str] = &[
-        "http://localhost:8080/products?min=1.0&max=50.0",
-        "http://localhost:8080/products",
-        "http://localhost:8080/orders",
-        "http://localhost:8080/customers",
-    ];
-}
+use crate::{GRAPHQL_ENDPOINT, HOST_NAME};
 
 pub fn get_graphql_queries() -> Vec<String> {
     let mut requests = Vec::new();
+
+    requests.push(
+        r#"
+        query allCustomers {
+            customers {
+              name
+              id
+              email
+              address
+              orders {
+                id
+                products{
+                  id
+                  name
+                  price
+                  description
+                }
+              }
+            }
+          }
+        "#.into()
+    );
 
     requests.push(
         r#"
@@ -40,19 +53,15 @@ pub fn get_graphql_queries() -> Vec<String> {
         "#.into()
     );
 
-    requests.push(
-        r#"
-        query allProducts {
-            products {
-                id
-                name
-                price
-                description
-            }
-        }
-        "#.into()
-    );
+    requests
+}
 
+pub fn get_rest_queries() -> Vec<(Method, String)> {
+    let mut requests = Vec::new();
+    requests.push((Method::GET, HOST_NAME.to_string() + "/customers"));
+    requests.push((Method::GET, HOST_NAME.to_string() + "/orders"));
+    requests.push((Method::GET, HOST_NAME.to_string() + "/products"));
+    requests.push((Method::GET, HOST_NAME.to_string() + "/products?min=1.0&max=50.0"));
     requests
 }
 
@@ -65,4 +74,8 @@ pub fn build_graphql_request(client: &Client, query: &str) -> Request {
         .body(body.to_string())
         .build()
         .unwrap()
+}
+
+pub fn build_rest_request(client: &Client, method: &Method, query: &str) -> Request {
+    client.request(method.clone(), query).build().unwrap()
 }

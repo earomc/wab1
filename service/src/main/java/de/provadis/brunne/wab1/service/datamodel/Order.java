@@ -25,23 +25,20 @@ public final class Order {
         this(id, OffsetDateTime.now(), products, OrderStatus.PENDING);
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
 
-    public OffsetDateTime orderedOn() {
+    public OffsetDateTime getOrderedOn() {
         return orderedOn;
     }
 
-    public List<Product> products() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public OrderStatus status() {
+    public OrderStatus getStatus() {
         return status;
-    }
-    public void setStatus(OrderStatus status) {
-        this.status = status;
     }
 
     @Override

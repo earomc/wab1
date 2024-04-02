@@ -24,25 +24,26 @@ public final class Customer {
         this(id, name, email, address, new ArrayList<>());
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
 
-    public String name() {
+    public String getName() {
         return name;
     }
 
-    public String email() {
+    public String getEmail() {
         return email;
     }
 
-    public String address() {
+    public String getAddress() {
         return address;
     }
 
-    public List<Order> orders() {
+    public List<Order> getOrders() {
         return orders;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
