@@ -19,7 +19,6 @@ G R requesting customer by id
 G R requesting product by id
 G R requesting order by id
 G R requesting products below/above a specific price
-G R requesting all products of all orders of a specific customer.
 
 Mutation
 
