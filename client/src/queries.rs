@@ -6,25 +6,27 @@ use serde_json::json;
 
 use crate::{GRAPHQL_ENDPOINT, HOST_NAME};
 
-pub fn get_graphql_queries() -> Vec<String> {
-    let mut requests = Vec::new();
+pub fn get_graphql_queries() -> Vec<GraphQlQuery> {
+    let mut gql_queries = Vec::new();
 
-    requests.push(
-        r#"
-    query allProducts {
-        products {
-          id
-          name
-          price
-          description
-        }
-      }
-    "#
+    gql_queries.push(GraphQlQuery {
+        name: "allProducts".to_string(),
+        raw_query: r#"
+        query allProducts {
+            products {
+              id
+              name
+              price
+              description
+            }
+          }
+        "#
         .to_string(),
-    );
+    });
 
-    requests.push(
-        r#"
+    gql_queries.push(GraphQlQuery {
+        name: "all_customers".to_string(),
+        raw_query: r#"
         query allCustomers {
             customers {
               name
@@ -44,54 +46,57 @@ pub fn get_graphql_queries() -> Vec<String> {
           }
         "#
         .to_string(),
-    );
+    });
 
-    requests.push(
-        r#"
-    query allOrders {
-        orders {
-          id
-          orderedOn
-          status
-          products {
-            id
-            name
-            price
-            description
-          }
-        }
-      }
-    "#
-        .to_string(),
-    );
-
-    requests.push(
-        r#"
-    query customerById {
-        customer(id: "customer-6") {
-          id
-          name
-          email
-          address
-          orders {
-            id
-            orderedOn
-            status
-            products {
+    gql_queries.push(GraphQlQuery {
+        name: "all_orders".to_string(),
+        raw_query: r#"
+        query allOrders {
+            orders {
               id
-              name
-              price
-              description
+              orderedOn
+              status
+              products {
+                id
+                name
+                price
+                description
+              }
             }
           }
-        }
-      }
-    "#
+        "#
         .to_string(),
-    );
+    });
 
-    requests.push(
-        r#"
+    gql_queries.push(GraphQlQuery {
+        name: "customer_by_id".to_string(),
+        raw_query: r#"
+        query customerById {
+            customer(id: "customer-6") {
+              id
+              name
+              email
+              address
+              orders {
+                id
+                orderedOn
+                status
+                products {
+                  id
+                  name
+                  price
+                  description
+                }
+              }
+            }
+          }
+        "#
+        .to_string(),
+    });
+
+    gql_queries.push(GraphQlQuery {
+        name: "product_by_id".to_string(),
+        raw_query: r#"
         query productById {
             product(id: "product-1") {
               id
@@ -102,10 +107,11 @@ pub fn get_graphql_queries() -> Vec<String> {
           }
         "#
         .to_string(),
-    );
+    });
 
-    requests.push(
-        r#"
+    gql_queries.push(GraphQlQuery {
+        name: "order_by_id".to_string(),
+        raw_query: r#"
         query orderById {
             order(id: "order-1") {
               id
@@ -121,41 +127,60 @@ pub fn get_graphql_queries() -> Vec<String> {
           }
         "#
         .to_string(),
-    );
+    });
 
-    requests.push(
-        r#"
-        query {
-            products(priceFilter: { min: 10, max: 50 }) {
+    gql_queries.push(GraphQlQuery {
+        name: "products_with_filter".to_string(),
+        raw_query: r#"
+        query productsWithFilter ($priceFilter: PriceFilter) {
+            products(priceFilter: $priceFilter) {
                 id
                 name
                 price
+                description
             }
-        }
+          }
         "#
         .to_string(),
-    );
-
-    requests
+    });
+    gql_queries
 }
 
-pub fn get_rest_queries() -> Vec<(Method, String)> {
+pub fn get_rest_queries() -> Vec<RestQuery> {
     let mut requests = Vec::new();
-    requests.push((Method::GET, HOST_NAME.to_string() + "/products"));
-    requests.push((Method::GET, HOST_NAME.to_string() + "/customers"));
-    requests.push((Method::GET, HOST_NAME.to_string() + "/orders"));
-    requests.push((Method::GET, HOST_NAME.to_string() + "/customer?id=customer-6"));
-    requests.push((Method::GET, HOST_NAME.to_string() + "/product?id=product-1"));
-    requests.push((Method::GET, HOST_NAME.to_string() + "/order?id=order-1"));
-    requests.push((
-        Method::GET,
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/products",
+        "all_products",
+    ));
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/customers",
+        "all_customers",
+    ));
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/orders",
+        "all_orders",
+    ));
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/customer?id=customer-6",
+        "customer_by_id",
+    ));
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/product?id=product-1",
+        "product_by_id",
+    ));
+    requests.push(RestQuery::new_get(
+        HOST_NAME.to_string() + "/order?id=order-1",
+        "order_by_id",
+    ));
+    requests.push(RestQuery::new_get(
         HOST_NAME.to_string() + "/products?min=1.0&max=50.0",
+        "products_with_filter",
     ));
     requests
 }
 
-pub fn build_graphql_request(client: &Client, query: &str) -> Request {
-    let body = json!({"query": query});
+pub fn build_graphql_request(client: &Client, query: &GraphQlQuery) -> Request {
+    let body = json!({"query": query.raw_query});
 
     client
         .post(GRAPHQL_ENDPOINT)
@@ -165,6 +190,62 @@ pub fn build_graphql_request(client: &Client, query: &str) -> Request {
         .unwrap()
 }
 
-pub fn build_rest_request(client: &Client, method: &Method, query: &str) -> Request {
-    client.request(method.clone(), query).build().unwrap()
+pub fn build_rest_request(client: &Client, query: &RestQuery) -> Request {
+    client.request(query.method().clone(), &query.endpoint).build().unwrap()
+}
+
+pub struct GraphQlQuery {
+    pub raw_query: String,
+    pub name: String,
+}
+
+pub struct RestQuery {
+    method: Method,
+    pub endpoint: String,
+    pub name: String,
+}
+
+impl RestQuery {
+    fn new(method: Method, endpoint: String, name: &str) -> RestQuery {
+        RestQuery {
+            method,
+            endpoint,
+            name: name.to_string(),
+        }
+    }
+    fn new_get(endpoint: String, name: &str) -> RestQuery {
+        Self::new(Method::GET, endpoint, name)
+    }
+    fn new_put(endpoint: String, name: &str) -> RestQuery {
+        Self::new(Method::PUT, endpoint, name)
+    }
+    fn new_delete(endpoint: String, name: &str) -> RestQuery {
+        Self::new(Method::DELETE, endpoint, name)
+    }
+    fn new_post(endpoint: String, name: &str) -> RestQuery {
+        Self::new(Method::POST, endpoint, name)
+    }
+}
+
+impl MeasuredQuery for RestQuery {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+    fn method(&self) -> &Method {
+        &self.method
+    }
+}
+
+impl MeasuredQuery for GraphQlQuery {
+    fn get_name(&self) -> &str {
+        &self.name
+    }
+    fn method(&self) -> &Method {
+        &Method::PUT
+    }
+}
+
+trait MeasuredQuery {
+    fn get_name(&self) -> &str;
+    fn method(&self) -> &Method;
 }

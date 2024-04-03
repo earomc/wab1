@@ -37,7 +37,7 @@ pub fn write_results(results: &Vec<MeasureResult>, name: &str) -> Result<(), Box
     Ok(())
 }
 
-pub fn write_bulk_measure_results<'a>(
+pub fn write_bulk_results<'a>(
     results: impl IntoIterator<Item = &'a BulkMeasureResult<'a>>,
     name: &str,
 ) -> Result<(), Box<dyn Error>> {
