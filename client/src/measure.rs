@@ -30,25 +30,26 @@ pub struct BulkMeasureResult<'a> {
 
 impl<'a> Debug for BulkMeasureResult<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let durations : Vec<Duration> = self.single_results.iter().map(|r| r.duration).collect();
         f.write_fmt(format_args!(
-            "Average duration: {:?}, Median duration: {:?}",
-            self.average_duration, self.median_duration
+            "{} - Average duration: {:?}, Median duration: {:?}\n{:?}",
+            self.name, self.average_duration, self.median_duration, durations
         ))
     }
 }
 
 impl<'a> BulkMeasureResult<'a> {
     pub fn from_single_results(single_results: Vec<MeasureResult>, name: &'a str) -> BulkMeasureResult {
-        let mut durations_as_nanos: Vec<u128> = single_results
+        let mut durations_as_micros: Vec<u128> = single_results
             .iter()
-            .map(|res| res.duration.as_nanos())
+            .map(|res| res.duration.as_micros())
             .collect();
 
-        let average_nanos = average(&durations_as_nanos);
-        let average_duration = Duration::from_nanos(average_nanos as u64);
+        let average_micros = average(&durations_as_micros);
+        let average_duration = Duration::from_micros(average_micros as u64);
 
-        let median_nanos = median(&mut durations_as_nanos);
-        let median_duration = Duration::from_nanos(median_nanos as u64);
+        let median_micros = median(&mut durations_as_micros);
+        let median_duration = Duration::from_micros(median_micros as u64);
 
         Self { single_results, average_duration, median_duration, name}
     }
@@ -70,25 +71,24 @@ pub fn measure_request(client: &Client, request: Request) -> Result<MeasureResul
     })
 }
 
-pub fn measure_rest_query_bulk<'a>(client: &Client, query: &RestQuery, iterations: usize, name: &'a str) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
+pub fn measure_rest_query_bulk<'a>(client: &Client, query: &'a RestQuery, iterations: usize) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
         let result = measure_request(client, build_rest_request(client, query))?;
         single_results.push(result);
     }
-    Ok(BulkMeasureResult::from_single_results(single_results, name))
+    Ok(BulkMeasureResult::from_single_results(single_results, &query.name))
 }
 
 pub fn measure_graphql_query_bulk<'a>(
     client: &Client,
-    query: &GraphQlQuery,
+    query: &'a GraphQlQuery,
     iterations: usize,
-    name: &'a str
 ) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
         let result = measure_request(client, build_graphql_request(&client, query))?;
         single_results.push(result);
     }
-    Ok(BulkMeasureResult::from_single_results(single_results, name))
+    Ok(BulkMeasureResult::from_single_results(single_results, &query.name))
 }

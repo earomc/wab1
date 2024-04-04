@@ -10,7 +10,7 @@ pub fn get_graphql_queries() -> Vec<GraphQlQuery> {
     let mut gql_queries = Vec::new();
 
     gql_queries.push(GraphQlQuery {
-        name: "allProducts".to_string(),
+        name: "all_products".to_string(),
         raw_query: r#"
         query allProducts {
             products {
