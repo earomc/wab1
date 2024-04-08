@@ -1,7 +1,6 @@
-package de.provadis.brunne.wab1.service.datamodel;
+package de.provadis.brunne.wab1.service.common.datamodel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 

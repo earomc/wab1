@@ -1,9 +1,8 @@
-package de.provadis.brunne.wab1.service.datamodel;
+package de.provadis.brunne.wab1.service.common.datamodel;
 
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 public final class Order {
     private final String id;

@@ -1,12 +1,11 @@
-package de.provadis.brunne.wab1.service.controller.rest;
+package de.provadis.brunne.wab1.service.rest;
 
-import de.provadis.brunne.wab1.service.DataSource;
-import de.provadis.brunne.wab1.service.datamodel.Customer;
-import de.provadis.brunne.wab1.service.datamodel.Order;
-import de.provadis.brunne.wab1.service.datamodel.PriceFilter;
-import de.provadis.brunne.wab1.service.datamodel.Product;
+import de.provadis.brunne.wab1.service.common.DataSource;
+import de.provadis.brunne.wab1.service.common.datamodel.Customer;
+import de.provadis.brunne.wab1.service.common.datamodel.Order;
+import de.provadis.brunne.wab1.service.common.datamodel.PriceFilter;
+import de.provadis.brunne.wab1.service.common.datamodel.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
