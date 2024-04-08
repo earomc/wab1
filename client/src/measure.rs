@@ -30,10 +30,10 @@ pub struct BulkMeasureResult<'a> {
 
 impl<'a> Debug for BulkMeasureResult<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let durations : Vec<Duration> = self.single_results.iter().map(|r| r.duration).collect();
+        //let durations : Vec<Duration> = self.single_results.iter().map(|r| r.duration).collect();
         f.write_fmt(format_args!(
-            "{} - Average duration: {:?}, Median duration: {:?}\n{:?}",
-            self.name, self.average_duration, self.median_duration, durations
+            "{} - Average duration: {:?}, Median duration: {:?}",
+            self.name, self.average_duration, self.median_duration
         ))
     }
 }

@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .timeout(Duration::from_secs(10))
         .build()?;
 
-    let iterations = 10000;
+    let iterations = 1000;
     
     let queries_gql = get_graphql_queries();
     let queries_rest = get_rest_queries();
