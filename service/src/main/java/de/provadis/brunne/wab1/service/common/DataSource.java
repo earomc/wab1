@@ -44,7 +44,7 @@ public class DataSource {
 
     private void addCustomers(Customer... customers) {
         for (Customer customer : customers) {
-            this.customers.put(customer.getId(), customer);
+            this.customers.put(customer.id(), customer);
         }
     }
 
@@ -55,19 +55,21 @@ public class DataSource {
     }
 
     private void initCustomers() {
+        Customer customer3 = new Customer("customer-3", "Mr. Tim Poorstein", "nomailfortim@myprov.de", "Schrankstraße 2, 12314 Möbelheim, Deutschland");
+        Customer customer6 = new Customer("customer-6", "Morris Well", "nope@no.com", "Falafelgasse 1501");
         this.addCustomers(
                 new Customer("customer-1", "Richie Langston", "richielangston@rockstarmail.com", "1231 Sesame St, Aberdeen, WA, United States"),
                 new Customer("customer-2", "Maine Boole", "greatmail@coolmail.me", "the only amazing home address of maine boole"),
-                new Customer("customer-3", "Mr. Tim Poorstein", "nomailfortim@myprov.de", "Schrankstraße 2, 12314 Möbelheim, Deutschland"),
+                customer3,
                 new Customer("customer-4", "Sanoneinan Anaaahrijey", "sanoneinan.anaaahrijey@gmail.com", "Wurstfabrikstraße 2"),
                 new Customer("customer-5", "Simon S. Colorful", "simoncolorful@paramail.ch", "mom"),
-                new Customer("customer-6", "Morris Well", "nope@no.com", "Falafelgasse 1501")
+                customer6
         );
-        addOrder(customers.get("customer-3"),
+        addOrder(customer3,
                 new Order("order-1",
                         List.of(products.get("product-2"))
                 ));
-        addOrder(customers.get("customer-6"),
+        addOrder(customer6,
                 new Order("order-2", List.of(
                         products.get("product-3"),
                         products.get("product-4")
@@ -100,8 +102,8 @@ public class DataSource {
     }
 
     public void addOrder(Customer customer, Order order) {
-        customer.getOrders().add(order);
-        orders.put(order.getId(), order);
+        customer.orders().add(order);
+        orders.put(order.id(), order);
     }
 
     public Order getOrderById(String id) {
