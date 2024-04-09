@@ -2,7 +2,7 @@ use std::{error::Error, io::Read, time::{Duration, Instant}};
 
 use reqwest::blocking::{Client, Request, Response};
 
-use crate::{num_util::{average, median}, queries::{build_graphql_request, build_rest_request, GraphQlQuery, RestQuery}};
+use crate::{num_util::{average, median}, queries::{GraphQlQuery, RestQuery}};
 
 use core::fmt::Debug;
 
@@ -74,7 +74,7 @@ pub fn measure_request(client: &Client, request: Request) -> Result<MeasureResul
 pub fn measure_rest_query_bulk<'a>(client: &Client, query: &'a RestQuery, iterations: usize) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
-        let result = measure_request(client, build_rest_request(client, query))?;
+        let result = measure_request(client, query.to_request(client))?;
         single_results.push(result);
     }
     Ok(BulkMeasureResult::from_single_results(single_results, &query.name))
@@ -87,7 +87,7 @@ pub fn measure_graphql_query_bulk<'a>(
 ) -> Result<BulkMeasureResult<'a>, Box<dyn Error>> {
     let mut single_results = Vec::new();
     for _ in 0..iterations {
-        let result = measure_request(client, build_graphql_request(&client, query))?;
+        let result = measure_request(client, query.to_request(client))?;
         single_results.push(result);
     }
     Ok(BulkMeasureResult::from_single_results(single_results, &query.name))

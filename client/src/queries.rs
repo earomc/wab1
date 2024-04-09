@@ -179,24 +179,22 @@ pub fn get_rest_queries() -> Vec<RestQuery> {
     requests
 }
 
-pub fn build_graphql_request(client: &Client, query: &GraphQlQuery) -> Request {
-    let body = json!({"query": query.raw_query});
-
-    client
-        .post(GRAPHQL_ENDPOINT)
-        .header("Content-Type", "application/json")
-        .body(body.to_string())
-        .build()
-        .unwrap()
-}
-
-pub fn build_rest_request(client: &Client, query: &RestQuery) -> Request {
-    client.request(query.method().clone(), &query.endpoint).build().unwrap()
-}
-
 pub struct GraphQlQuery {
     pub raw_query: String,
     pub name: String,
+}
+
+impl GraphQlQuery {
+    pub fn to_request(&self, client: &Client) -> Request {
+        let body = json!({"query": self.raw_query});
+    
+        client
+            .post(GRAPHQL_ENDPOINT)
+            .header("Content-Type", "application/json")
+            .body(body.to_string())
+            .build()
+            .unwrap()
+    }
 }
 
 pub struct RestQuery {
@@ -213,17 +211,20 @@ impl RestQuery {
             name: name.to_string(),
         }
     }
-    fn new_get(endpoint: String, name: &str) -> RestQuery {
+    pub fn new_get(endpoint: String, name: &str) -> RestQuery {
         Self::new(Method::GET, endpoint, name)
     }
-    fn new_put(endpoint: String, name: &str) -> RestQuery {
+    pub fn new_put(endpoint: String, name: &str) -> RestQuery {
         Self::new(Method::PUT, endpoint, name)
     }
-    fn new_delete(endpoint: String, name: &str) -> RestQuery {
+    pub fn new_delete(endpoint: String, name: &str) -> RestQuery {
         Self::new(Method::DELETE, endpoint, name)
     }
-    fn new_post(endpoint: String, name: &str) -> RestQuery {
+    pub fn new_post(endpoint: String, name: &str) -> RestQuery {
         Self::new(Method::POST, endpoint, name)
+    }
+    pub fn to_request(&self, client: &Client) -> Request {
+        client.request(self.method().clone(), &self.endpoint).build().unwrap()
     }
 }
 
