@@ -1,10 +1,10 @@
-package de.provadis.brunne.wab1.service.graphql;
+package de.provadis.brunne.wab1.server.graphql;
 
-import de.provadis.brunne.wab1.service.common.DataSource;
-import de.provadis.brunne.wab1.service.common.datamodel.Customer;
-import de.provadis.brunne.wab1.service.common.datamodel.Order;
-import de.provadis.brunne.wab1.service.common.datamodel.PriceFilter;
-import de.provadis.brunne.wab1.service.common.datamodel.Product;
+import de.provadis.brunne.wab1.server.common.DataSource;
+import de.provadis.brunne.wab1.server.common.datamodel.Customer;
+import de.provadis.brunne.wab1.server.common.datamodel.Order;
+import de.provadis.brunne.wab1.server.common.datamodel.PriceFilter;
+import de.provadis.brunne.wab1.server.common.datamodel.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;

@@ -1,9 +1,9 @@
-package de.provadis.brunne.wab1.service.common;
+package de.provadis.brunne.wab1.server.common;
 
-import de.provadis.brunne.wab1.service.common.datamodel.Customer;
-import de.provadis.brunne.wab1.service.common.datamodel.Order;
-import de.provadis.brunne.wab1.service.common.datamodel.PriceFilter;
-import de.provadis.brunne.wab1.service.common.datamodel.Product;
+import de.provadis.brunne.wab1.server.common.datamodel.Customer;
+import de.provadis.brunne.wab1.server.common.datamodel.Order;
+import de.provadis.brunne.wab1.server.common.datamodel.PriceFilter;
+import de.provadis.brunne.wab1.server.common.datamodel.Product;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

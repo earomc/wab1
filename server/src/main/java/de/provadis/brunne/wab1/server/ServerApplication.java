@@ -1,11 +1,11 @@
-package de.provadis.brunne.wab1.service;
+package de.provadis.brunne.wab1.server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServiceApplication {
+public class ServerApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(ServiceApplication.class, args);
+		SpringApplication.run(ServerApplication.class, args);
 	}
 }

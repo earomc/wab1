@@ -1,10 +1,10 @@
-package de.provadis.brunne.wab1.service.rest;
+package de.provadis.brunne.wab1.server.rest;
 
-import de.provadis.brunne.wab1.service.common.DataSource;
-import de.provadis.brunne.wab1.service.common.datamodel.Customer;
-import de.provadis.brunne.wab1.service.common.datamodel.Order;
-import de.provadis.brunne.wab1.service.common.datamodel.PriceFilter;
-import de.provadis.brunne.wab1.service.common.datamodel.Product;
+import de.provadis.brunne.wab1.server.common.DataSource;
+import de.provadis.brunne.wab1.server.common.datamodel.Customer;
+import de.provadis.brunne.wab1.server.common.datamodel.Order;
+import de.provadis.brunne.wab1.server.common.datamodel.PriceFilter;
+import de.provadis.brunne.wab1.server.common.datamodel.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

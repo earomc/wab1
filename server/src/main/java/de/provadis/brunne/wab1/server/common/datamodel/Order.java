@@ -1,4 +1,4 @@
-package de.provadis.brunne.wab1.service.common.datamodel;
+package de.provadis.brunne.wab1.server.common.datamodel;
 
 import java.time.OffsetDateTime;
 import java.util.List;
