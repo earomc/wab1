@@ -41,7 +41,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     for bulk_result_rest in bulk_results_rest {
         println!("Rest Result {:?}", bulk_result_rest);
     }
-    
     Ok(())
 }
 
