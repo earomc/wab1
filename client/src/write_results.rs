@@ -32,27 +32,12 @@ fn create_path_one_file(api_kind: &ApiKind) -> PathBuf {
     path
 }
 
-pub fn write_bulk_result(results: &BulkMeasureResult) -> Result<(), Box<dyn Error>> {
-    let path = create_path(false, &results.name.to_string());
-
-    let path_exists = path.try_exists().unwrap_or(false);
-    let mut wtr = Writer::from_path(&path)?;
-    if !path_exists {
-        wtr.write_record(["duration_us"])?;
-    }
-    for result in &results.single_results {
-        wtr.write_record(&[result.duration.as_micros().to_string()])?;
-    }
-    wtr.flush()?;
-    Ok(())
-}
-
 /// writes results in one file
 pub fn write_bulk_results_file(bulk_results: &Vec<BulkMeasureResult>, api_kind: &ApiKind) -> Result<(), Box<dyn Error>> {
     let path = create_path_one_file(api_kind);
 
     let path_exists = path.try_exists().unwrap_or(false);
-    let mut wtr = Writer::from_path(dbg!(path))?;
+    let mut wtr = Writer::from_path(path)?;
     
     if !path_exists {
         wtr.write_record(bulk_results.iter().map(|r| r.name))?;
