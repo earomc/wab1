@@ -3,7 +3,7 @@ mod queries;
 mod measure;
 mod write_results;
 
-use std::{env, error::Error, fmt::{write, Display, Pointer}, time::Duration};
+use std::{env, error::Error, fmt::Display, time::Duration};
 use queries::{get_graphql_queries, get_rest_queries};
 
 use crate::measure::{measure_graphql_query_bulk, measure_rest_query_bulk};
